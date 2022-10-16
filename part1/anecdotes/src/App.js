@@ -1,5 +1,21 @@
 import { useState } from 'react'
 
+const AnecdoteDisplay = ({ text, selected, votesNumber }) => {
+  return (
+    <>  
+      <h1>{ text }</h1> 
+      <p>{ selected }</p>
+      <p>has { votesNumber } votes</p>
+    </>
+  )
+}
+
+const Button = ({ text, handleClick }) => {
+  return (
+    <button onClick={ handleClick }>{ text }</button>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -24,12 +40,28 @@ const App = () => {
     setVotes(copy)
   }
 
+  const maxVoteIndex = votes.indexOf(Math.max(...votes));
+
   return (
     <div>
-      {anecdotes[selected]}
-      <p>has {votes[selected]} votes</p>
-      <button onClick={handleVote}>vote</button>
-      <button onClick={handleNextAnecdote}>Next Anecdote</button>
+      <AnecdoteDisplay 
+        text="Anecdote of the day" 
+        selected={anecdotes[selected]} 
+        votesNumber={votes[selected]}
+      />
+      <Button 
+        text="Vote"
+        handleClick={handleVote}
+      />
+      <Button 
+        text="Next Anecdote"
+        handleClick={handleNextAnecdote}
+      />
+      <AnecdoteDisplay 
+        text="Anecdote with most votes" 
+        selected={anecdotes[maxVoteIndex]} 
+        votesNumber={votes[maxVoteIndex]}
+      />
     </div>
   )
 }
