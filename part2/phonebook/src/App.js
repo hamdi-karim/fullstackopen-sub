@@ -35,14 +35,25 @@ const App = () => {
 
     const personExists = persons.some(person => person.name === newName)
 
+    const newPersonObj = { name: newName, number: newNumber}
+
     personExists ? 
       alert(`${newName} is already added to the phonebook`) :
-        newName && newNumber ? 
-        setPersons(persons.concat({
-          name: newName,
-          number: newNumber
-        })) : 
-          alert('Please fill out both name & number fields');
+      
+      axios.post("http://localhost:3001/persons", newPersonObj)
+      .then(newPersonRes => {
+        setPersons(persons.concat(newPersonRes.data))
+      })
+      
+
+    // personExists ? 
+    //   alert(`${newName} is already added to the phonebook`) :
+    //     newName && newNumber ? 
+    //     setPersons(persons.concat({
+    //       name: newName,
+    //       number: newNumber
+    //     })) : 
+    //       alert('Please fill out both name & number fields');
       
 
     setNewName('')
