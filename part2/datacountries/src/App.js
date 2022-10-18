@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import CountryDetails from './components/CountryDetails'
+import CountriesList from './components/CountriesList'
 
 const App = () => {
 
@@ -32,24 +34,11 @@ const App = () => {
 
       {
         filteredCountries.length === 1 ? 
-          <div>
-            <h1>{filteredCountries[0].name.common}</h1>
-            <p>Capital: {filteredCountries[0].capital[0]}</p>
-            <p>Area: {filteredCountries[0].area}</p>
-            <h2>Languages</h2>
-            <ul>
-              {Object.entries(filteredCountries[0].languages).map(
-                ([key, value]) => <li key={key}>{value}</li>
-              )}
-            </ul>
-            <img src={filteredCountries[0].flags.png}  />
-          </div>
+          <CountryDetails country={filteredCountries[0]} />
          : filteredCountries.length > 10 ? 
           <p>Too many matches, specify another filter</p> : 
-            filteredCountries.map(country => <div key={country.name.official}>{country.name.common}</div>)
+            <CountriesList filteredCountries={filteredCountries} />      
       }
-      {/* {!filterText && <p>Enter filter text to display coubtries</p>} */}
-
 
     </div>
   )
