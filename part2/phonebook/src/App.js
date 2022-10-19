@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import personsService from "./services/persons";
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -12,9 +12,10 @@ const App = () => {
   const [filterText, setFilterText] = useState('')
 
   useEffect(() => {
-    axios.get("http://localhost:3001/persons")
-      .then(response => {
-        setPersons(response.data)
+    personsService
+      .getAll()
+      .then(allPersonsData => {
+        setPersons(allPersonsData)
       })
   }, [])
 
@@ -40,21 +41,11 @@ const App = () => {
     personExists ? 
       alert(`${newName} is already added to the phonebook`) :
       
-      axios.post("http://localhost:3001/persons", newPersonObj)
-      .then(newPersonRes => {
-        setPersons(persons.concat(newPersonRes.data))
-      })
-      
-
-    // personExists ? 
-    //   alert(`${newName} is already added to the phonebook`) :
-    //     newName && newNumber ? 
-    //     setPersons(persons.concat({
-    //       name: newName,
-    //       number: newNumber
-    //     })) : 
-    //       alert('Please fill out both name & number fields');
-      
+      personsService
+        .createPerson(newPersonObj)
+        .then(newPersonRes => {
+          setPersons(persons.concat(newPersonRes))
+        })
 
     setNewName('')
     setNewNumber('')
