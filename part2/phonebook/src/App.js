@@ -31,21 +31,44 @@ const App = () => {
     setFilterText(event.target.value)
   }
 
+  const handleDeletePerson = id => {
+    const personToDelete = persons.find(p => p.id === id)
+
+    if (window.confirm(`Delete ${personToDelete.name}?`)) {
+      personsService
+      .deletePerson(id)
+      .then( () => {
+        const filteredPersons = persons.filter(person => person.id !== id)
+        
+        setPersons(filteredPersons)
+      } )
+    }
+    
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    const personExists = persons.some(person => person.name === newName)
+    const personExists = persons.find(person => person.name === newName)
 
     const newPersonObj = { name: newName, number: newNumber}
 
-    personExists ? 
-      alert(`${newName} is already added to the phonebook`) :
-      
+    if (personExists) {
+      if (window.confirm(`${personExists.name} is already added to the phonebook, replace the old number with a new one?`)) {
+          personsService
+            .updatePerson(personExists.id, newPersonObj)
+            .then(updatedPerson => {
+              setPersons(persons.map(person => person.id !== personExists.id ? person : updatedPerson))
+            })
+        }
+    } else {
       personsService
         .createPerson(newPersonObj)
         .then(newPersonRes => {
           setPersons(persons.concat(newPersonRes))
         })
+    }
+      
 
     setNewName('')
     setNewNumber('')
@@ -75,7 +98,10 @@ const App = () => {
       />
 
       <h2>Numbers</h2>
-      <Persons filteredData={filteredData} />
+      <Persons 
+        filteredData={filteredData} 
+        handleDeletePerson={handleDeletePerson} 
+      />
     </div>
   )
 }
