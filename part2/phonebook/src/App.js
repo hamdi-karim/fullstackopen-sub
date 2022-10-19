@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
 import Filter from './components/Filter'
+import Notification from './components/Notification';
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import personsService from "./services/persons";
@@ -10,6 +11,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterText, setFilterText] = useState('')
+  const [createPhonebookSuccessMessage, setCreatePhonebookSuccessMessage] = useState('')
+  const [createPhonebookFailureMessage, setCreatePhonebookFailureMessage] = useState('')
 
   useEffect(() => {
     personsService
@@ -59,7 +62,23 @@ const App = () => {
             .updatePerson(personExists.id, newPersonObj)
             .then(updatedPerson => {
               setPersons(persons.map(person => person.id !== personExists.id ? person : updatedPerson))
+              setCreatePhonebookSuccessMessage(`${newPersonObj.name}'s number updated with ${newPersonObj.number}`)
+              setTimeout(() => {
+                setCreatePhonebookSuccessMessage('')
+              }, 4000)
             })
+            .catch(error => {
+              setCreatePhonebookFailureMessage(
+                `Information of '${newPersonObj.name}' was already deleted from server`
+              )
+              setPersons(persons.filter(p => p.id !== personExists.id))
+              setTimeout(() => {
+                setCreatePhonebookFailureMessage('')
+              }, 4000)
+            })
+
+          
+          
         }
     } else {
       personsService
@@ -67,9 +86,13 @@ const App = () => {
         .then(newPersonRes => {
           setPersons(persons.concat(newPersonRes))
         })
+
+        setCreatePhonebookSuccessMessage(`Added ${newPersonObj.name}`)
+        setTimeout(() => {
+          setCreatePhonebookSuccessMessage('')
+        }, 4000)
     }
       
-
     setNewName('')
     setNewNumber('')
   }
@@ -81,6 +104,9 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+
+      {createPhonebookSuccessMessage && <Notification message={createPhonebookSuccessMessage} type="success" />}
+      {createPhonebookFailureMessage && <Notification message={createPhonebookFailureMessage} type="error" />}
 
       <Filter 
         filterText={filterText} 
