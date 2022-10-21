@@ -50,6 +50,23 @@ app.post('/api/persons', (request, response) => {
   const body = request.body
   const newId = generateId()
 
+  if (!body.name) {
+    return response.status(400).json({
+      error: 'name is required'
+    })
+  } else if (!body.number) {
+    return response.status(400).json({
+      error: 'number is required'
+    })
+  }
+
+  const nameExists = persons.some(p => p.name === body.name)
+  if (nameExists) {
+    return response.status(400).json({
+      error: 'name must be unique'
+    })
+  }
+
   const newPerson = {
     id: newId,
     name: body.name,
