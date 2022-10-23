@@ -3,6 +3,9 @@ const app = express()
 const morgan = require('morgan')
 const cors = require('cors');
 
+
+app.use(express.static('build'))
+
 app.use(express.json())
 
 app.use(cors())
@@ -103,16 +106,6 @@ app.get('/info', (request, response) => {
   <p>${date}</p>
   `)
 })
-
-app.get('/', (request, response) => {
-  const date = new Date()
-
-  response.send(`
-  <p>Phonebook Application - Karim Hamdi</p>
-  <p>${date}</p>
-  `)
-})
-
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
