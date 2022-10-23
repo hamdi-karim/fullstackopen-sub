@@ -104,6 +104,15 @@ app.get('/info', (request, response) => {
   `)
 })
 
+app.get('/', (request, response) => {
+  const date = new Date()
+
+  response.send(`
+  <p>Phonebook Application - Karim Hamdi</p>
+  <p>${date}</p>
+  `)
+})
+
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
