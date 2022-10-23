@@ -85,12 +85,18 @@ const App = () => {
         .createPerson(newPersonObj)
         .then(newPersonRes => {
           setPersons(persons.concat(newPersonRes))
+          setCreatePhonebookSuccessMessage(`Added ${newPersonObj.name}`)
+          setTimeout(() => {
+            setCreatePhonebookSuccessMessage('')
+          }, 4000)
+        }).catch(err =>  {
+          setCreatePhonebookFailureMessage('Error occured')
+          setTimeout(() => {
+            setCreatePhonebookFailureMessage('')
+          }, 4000)
         })
 
-        setCreatePhonebookSuccessMessage(`Added ${newPersonObj.name}`)
-        setTimeout(() => {
-          setCreatePhonebookSuccessMessage('')
-        }, 4000)
+        
     }
       
     setNewName('')
