@@ -1,8 +1,11 @@
+
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const cors = require('cors');
 
+require('dotenv').config()
+const Phonebook = require('./models/phonebook')
 
 app.use(express.static('build'))
 
@@ -14,7 +17,8 @@ morgan.token('body', (req) => {
   return Object.keys(req.body).length > 0 ? JSON.stringify(req.body) : ' '
 });
 
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
 let persons = [
   { 
     "id": 1,
@@ -39,28 +43,19 @@ let persons = [
 ]
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Phonebook.find({}).then(phonebooks => {
+    response.json(phonebooks)
+  })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-
-  const person = persons.find(p => p.id === id)
-
-  if (person) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
+  Phonebook.findById(request.params.id).then(phonebook => {
+    response.json(phonebook)
+  })
 })
-
-const generateId = () => {
-  return Math.floor(Math.random() * 4000+10)
-}
 
 app.post('/api/persons', (request, response) => {
   const body = request.body
-  const newId = generateId()
 
   if (!body.name) {
     return response.status(400).json({
@@ -72,22 +67,22 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  const nameExists = persons.some(p => p.name === body.name)
-  if (nameExists) {
-    return response.status(400).json({
-      error: 'name must be unique'
-    })
-  }
+  //TODO: Check the Name exists functionality
+  // const nameExists = persons.some(p => p.name === body.name)
+  // if (nameExists) {
+  //   return response.status(400).json({
+  //     error: 'name must be unique'
+  //   })
+  // }
 
-  const newPerson = {
-    id: newId,
+  const phonebook =  new Phonebook({
     name: body.name,
-    number: body.number
-  }
+    number: body.number,
+  })
 
-  persons = persons.concat(newPerson)
-
-  response.json(newPerson)
+  phonebook.save().then(newPerson => {
+    response.json(newPerson)
+  })
 })
 
 app.delete('/api/persons/:id', (request, response) => {
@@ -107,7 +102,7 @@ app.get('/info', (request, response) => {
   `)
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })

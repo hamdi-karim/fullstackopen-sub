@@ -1,20 +1,20 @@
 const mongoose = require('mongoose')
 
-if (process.argv.length < 3) {
-  console.log('Please provide the password as an argument: node mongo.js <password>')
-  process.exit(1)
-} else if (process.argv.length === 4) {
-  console.log('Please provide A number to be added to the phonebook')
-  process.exit(1)
-}
+const url = `mongodb+srv://fullstack-phonebook:kh22661356@cluster0.mu1uoad.mongodb.net/phonebookApp?retryWrites=true&w=majority`
 
-const password = process.argv[2]
-
-const url = `mongodb+srv://fullstack-phonebook:${password}@cluster0.mu1uoad.mongodb.net/phonebookApp?retryWrites=true&w=majority`
+mongoose.connect(url)
 
 const phonebookSchema = new mongoose.Schema({
   name: String,
   number: String
+})
+
+phonebookSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  }
 })
 
 const Phonebook = mongoose.model('Phonebook', phonebookSchema)
