@@ -52,10 +52,12 @@ const App = () => {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-
     const newPersonObj = { name: newName, number: newNumber}
 
-    personsService
+    const personExistsObj = persons.find(p => p.name === newPersonObj.name)
+
+    if (!personExistsObj) {
+      personsService
       .createPerson(newPersonObj)
       .then(newPersonRes => {
         setPersons(persons.concat(newPersonRes))
@@ -63,13 +65,33 @@ const App = () => {
         setTimeout(() => {
           setCreatePhonebookSuccessMessage('')
         }, 4000)
-      }).catch(err =>  {
-        setCreatePhonebookFailureMessage('Error occured')
+      })
+      .catch(err =>  {
+        setCreatePhonebookFailureMessage('Creation failed')
         setTimeout(() => {
           setCreatePhonebookFailureMessage('')
         }, 4000)
       })
-              
+
+    } else {
+      //TODO: Update Person
+      personsService.updatePerson(personExistsObj.id, newPersonObj)
+        .then(UpdatedPersonRes => {
+          setPersons(persons.map(p => p.id !== personExistsObj.id ? p : UpdatedPersonRes))
+          setCreatePhonebookSuccessMessage(`The number of ${newPersonObj.name} has been successfully updated`)
+          setTimeout(() => {
+            setCreatePhonebookSuccessMessage('')
+          }, 4000)
+        })
+        .catch(err =>  {
+          setCreatePhonebookFailureMessage('Update failed')
+          setTimeout(() => {
+            setCreatePhonebookFailureMessage('')
+          }, 4000)
+        })
+    }
+        
+    //TODO: check these state changes if it should be moved up
     setNewName('')
     setNewNumber('')
   }

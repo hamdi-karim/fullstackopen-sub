@@ -44,6 +44,7 @@ let persons = [
 
 app.get('/api/persons', (request, response) => {
   Phonebook.find({}).then(phonebooks => {
+    phonebookLength = phonebooks.length
     response.json(phonebooks)
   })
 })
@@ -77,6 +78,20 @@ app.post('/api/persons', (request, response) => {
   })
 })
 
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+
+  const updatedPersonObject = {
+    number: body.number
+  }
+
+  Phonebook.findByIdAndUpdate(request.params.id, updatedPersonObject, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
+}) 
+
 app.delete('/api/persons/:id', (request, response, next) => {
   Phonebook.findByIdAndRemove(request.params.id)
     .then(result => {
@@ -85,15 +100,16 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.get('/info', (request, response) => {
-  const phonebookCount = persons.length
-  const date = new Date()
-
-  response.send(`
-  <p>Phonebook has info for ${phonebookCount} people</p>
-  <p>${date}</p>
-  `)
-})
+app.get("/info", (request, response, next) => {
+  Phonebook.find({})
+    .then((people) => {
+      response.send(`
+      <p>Phonebook has info for ${people.length} people</p>
+      <p>${new Date()}</p>
+      `)
+    })
+    .catch((error) => next(error));
+});
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
