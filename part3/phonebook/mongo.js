@@ -1,7 +1,5 @@
 const mongoose = require('mongoose')
 
-const url = `mongodb+srv://fullstack-phonebook:kh22661356@cluster0.mu1uoad.mongodb.net/phonebookApp?retryWrites=true&w=majority`
-
 mongoose.connect(url)
 
 const phonebookSchema = new mongoose.Schema({
