@@ -52,53 +52,24 @@ const App = () => {
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    const personExists = persons.find(person => person.name === newName)
 
     const newPersonObj = { name: newName, number: newNumber}
 
-    if (personExists) {
-      if (window.confirm(`${personExists.name} is already added to the phonebook, replace the old number with a new one?`)) {
-          personsService
-            .updatePerson(personExists.id, newPersonObj)
-            .then(updatedPerson => {
-              setPersons(persons.map(person => person.id !== personExists.id ? person : updatedPerson))
-              setCreatePhonebookSuccessMessage(`${newPersonObj.name}'s number updated with ${newPersonObj.number}`)
-              setTimeout(() => {
-                setCreatePhonebookSuccessMessage('')
-              }, 4000)
-            })
-            .catch(error => {
-              setCreatePhonebookFailureMessage(
-                `Information of '${newPersonObj.name}' was already deleted from server`
-              )
-              setPersons(persons.filter(p => p.id !== personExists.id))
-              setTimeout(() => {
-                setCreatePhonebookFailureMessage('')
-              }, 4000)
-            })
-
-          
-          
-        }
-    } else {
-      personsService
-        .createPerson(newPersonObj)
-        .then(newPersonRes => {
-          setPersons(persons.concat(newPersonRes))
-          setCreatePhonebookSuccessMessage(`Added ${newPersonObj.name}`)
-          setTimeout(() => {
-            setCreatePhonebookSuccessMessage('')
-          }, 4000)
-        }).catch(err =>  {
-          setCreatePhonebookFailureMessage('Error occured')
-          setTimeout(() => {
-            setCreatePhonebookFailureMessage('')
-          }, 4000)
-        })
-
-        
-    }
-      
+    personsService
+      .createPerson(newPersonObj)
+      .then(newPersonRes => {
+        setPersons(persons.concat(newPersonRes))
+        setCreatePhonebookSuccessMessage(`Added ${newPersonObj.name}`)
+        setTimeout(() => {
+          setCreatePhonebookSuccessMessage('')
+        }, 4000)
+      }).catch(err =>  {
+        setCreatePhonebookFailureMessage('Error occured')
+        setTimeout(() => {
+          setCreatePhonebookFailureMessage('')
+        }, 4000)
+      })
+              
     setNewName('')
     setNewNumber('')
   }
