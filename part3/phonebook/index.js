@@ -58,30 +58,27 @@ app.get('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
-  // if (!body.name) {
-  //   return response.status(400).json({
-  //     error: 'name is required'
-  //   })
-  // } else if (!body.number) {
-  //   return response.status(400).json({
-  //     error: 'number is required'
-  //   })
-  // }
-
-  const phonebook =  new Phonebook({
-    name: body.name,
-    number: body.number,
-  })
-
-  phonebook.save()
-    .then(newPerson => {
-      response.json(newPerson)
+  Phonebook.find({})
+    .then(people => {
+      const exists = people.findIndex(p => p.name === body.name)
+      if (exists !== -1) {
+        response.status(400).send({ error: "Name already Exists" });
+      } else {
+        const phonebook =  new Phonebook({
+          name: body.name,
+          number: body.number,
+        })
+        phonebook.save()
+          .then(newPerson => {
+            response.json(newPerson)
+          })
+          .catch(error => {
+            next(error)
+          })
+      }
     })
-    .catch(error => {
-      // this is the way to access the error message
-      // console.log(error.response.data.error)
-      next(error)
-    })
+    .catch((error) => next(error));
+ 
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
