@@ -55,27 +55,33 @@ app.get('/api/persons/:id', (request, response) => {
   })
 })
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
-  if (!body.name) {
-    return response.status(400).json({
-      error: 'name is required'
-    })
-  } else if (!body.number) {
-    return response.status(400).json({
-      error: 'number is required'
-    })
-  }
+  // if (!body.name) {
+  //   return response.status(400).json({
+  //     error: 'name is required'
+  //   })
+  // } else if (!body.number) {
+  //   return response.status(400).json({
+  //     error: 'number is required'
+  //   })
+  // }
 
   const phonebook =  new Phonebook({
     name: body.name,
     number: body.number,
   })
 
-  phonebook.save().then(newPerson => {
-    response.json(newPerson)
-  })
+  phonebook.save()
+    .then(newPerson => {
+      response.json(newPerson)
+    })
+    .catch(error => {
+      // this is the way to access the error message
+      // console.log(error.response.data.error)
+      next(error)
+    })
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -122,6 +128,9 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } else if (error.name === 'ValidationError') {
+    console.log(error.message)
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)
