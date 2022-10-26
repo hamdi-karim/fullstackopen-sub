@@ -65,16 +65,18 @@ const App = () => {
         setTimeout(() => {
           setCreatePhonebookSuccessMessage('')
         }, 4000)
+
+        setNewName('')
+        setNewNumber('')
       })
       .catch(err =>  {
-        setCreatePhonebookFailureMessage('Creation failed')
+        setCreatePhonebookFailureMessage(err.response.data.error)
         setTimeout(() => {
           setCreatePhonebookFailureMessage('')
         }, 4000)
       })
 
     } else {
-      //TODO: Update Person
       personsService.updatePerson(personExistsObj.id, newPersonObj)
         .then(UpdatedPersonRes => {
           setPersons(persons.map(p => p.id !== personExistsObj.id ? p : UpdatedPersonRes))
@@ -82,6 +84,9 @@ const App = () => {
           setTimeout(() => {
             setCreatePhonebookSuccessMessage('')
           }, 4000)
+
+          setNewName('')
+          setNewNumber('')
         })
         .catch(err =>  {
           setCreatePhonebookFailureMessage('Update failed')
@@ -90,10 +95,7 @@ const App = () => {
           }, 4000)
         })
     }
-        
-    //TODO: check these state changes if it should be moved up
-    setNewName('')
-    setNewNumber('')
+
   }
 
   const filteredData = filterText === '' ? 
