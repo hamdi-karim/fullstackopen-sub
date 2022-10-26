@@ -89,7 +89,7 @@ const App = () => {
           setNewNumber('')
         })
         .catch(err =>  {
-          setCreatePhonebookFailureMessage('Update failed')
+          setCreatePhonebookFailureMessage("Update failed: " + err.response.data.error)
           setTimeout(() => {
             setCreatePhonebookFailureMessage('')
           }, 4000)
