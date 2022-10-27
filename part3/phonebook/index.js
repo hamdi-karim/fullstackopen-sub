@@ -1,8 +1,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
-const Phonebook = require('./models/phonebook');
 require('dotenv').config();
+const Phonebook = require('./models/phonebook');
 
 const app = express();
 
@@ -32,18 +32,17 @@ app.get('/api/persons/:id', (request, response) => {
   });
 });
 
-app.post('/api/persons', (request, response, next) => {
-  const { body } = request;
+app.post('/api/persons', async (request, response, next) => {
+  const { name, number } = request.body;
 
-  Phonebook.find({})
-    .then((people) => {
-      const exists = people.findIndex((p) => p.name === body.name);
-      if (exists !== -1) {
+  Phonebook.findOne({ name })
+    .then((personExist) => {
+      if (personExist !== -1) {
         response.status(400).send({ error: 'Name already Exists' });
       } else {
         const phonebook = new Phonebook({
-          name: body.name,
-          number: body.number,
+          name,
+          number,
         });
         phonebook
           .save()
