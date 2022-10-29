@@ -1,22 +1,22 @@
 // Module defines Establishing connection to the database
-const config = require('./utils/config')
+const { MONGODB_URI } = require('./utils/config')
 const express = require('express')
 const cors = require('cors')
 const blogsRouter = require('./controllers/blogs')
 const middleware = require('./utils/middleware')
-const logger = require('./utils/logger')
+const { info, error } = require('./utils/logger')
 const mongoose = require('mongoose')
 
 const app = express()
 
-logger.info('connecting to', config.MONGODB_URI)
+info('connecting to', MONGODB_URI)
 
-mongoose.connect(config.MONGODB_URI)
+mongoose.connect(MONGODB_URI)
   .then(() => {
-    logger.info('connected to MongoDB')
+    info('connected to MongoDB')
   })
   .catch((error) => {
-    logger.error('error connecting to MongoDB:', error.message)
+    error('error connecting to MongoDB:', error.message)
   })
 
 app.use(cors())
