@@ -1,0 +1,25 @@
+{
+  "name": "bloglist",
+  "version": "1.0.0",
+  "description": "allows users to save info about interesting blog posts",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "backend-testing"
+  ],
+  "author": "Karim Hamdi",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.7.0",
+    "morgan": "^1.10.0"
+  }
+}
