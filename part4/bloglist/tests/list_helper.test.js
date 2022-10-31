@@ -62,12 +62,16 @@ const listWithOneBlog = [
   }
 ]
 
-test('dummy returns one', () => {
-  const blogs = []
-
-  const result = listHelper.dummy(blogs)
-  expect(result).toBe(1)
+describe ('dummy', () => {
+  
+  test('dummy returns one', () => {
+    const blogs = []
+  
+    const result = listHelper.dummy(blogs)
+    expect(result).toBe(1)
+  })
 })
+
 
 describe('total likes', () => {
 
@@ -87,9 +91,8 @@ describe('total likes', () => {
   })
 })
 
-
 describe('favourite blog', () => {
-  test('of empty list is zero', () => {
+  test('of empty when list is empty', () => {
     const result = listHelper.favoriteBlog([])
     expect(result).toEqual({})
   })
@@ -112,3 +115,28 @@ describe('favourite blog', () => {
     })
   })
 })
+
+describe('author with most blogs', () => {
+  test('of empty when list is empty', () => {
+    const result = listHelper.mostBlogs([])
+    expect(result).toEqual({})
+  })
+
+  test('when list has only one blog, equals the the object', () => {
+    const result = listHelper.mostBlogs(listWithOneBlog)
+    expect(result).toEqual({
+      author: 'Edsger W. Dijkstra',
+      blogs: 5
+    })
+  })
+
+  test('of a bigger list returns the blog with the most likes', () => {
+    const result = listHelper.mostBlogs(listWithManyBlog)
+    debugger;
+    expect(result).toEqual({
+      author: 'Edsger W. Dijkstra',
+      blogs: 17
+    })
+  })
+})
+
