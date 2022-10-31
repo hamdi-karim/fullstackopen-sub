@@ -26,11 +26,11 @@ const favoriteBlog = (blogs) => {
 const mostBlogs = (blogs) => {
   const groupByAuthorReduce = (authorsObject, blogItem) => {
     if (authorsObject[blogItem.author]) {
-      authorsObject[blogItem.author].blogs += blogItem.likes
+        authorsObject[blogItem.author].blogs ++
     } else {
       authorsObject[blogItem.author] = {}
       authorsObject[blogItem.author].author = blogItem.author
-      authorsObject[blogItem.author].blogs = blogItem.likes
+      authorsObject[blogItem.author].blogs = 1
     }
     return authorsObject
   }
@@ -48,15 +48,47 @@ const mostBlogs = (blogs) => {
     blogs.length === 1 ? 
       {
         author: blogs[0].author,
-        blogs: blogs[0].likes
+        blogs: 1
       } :
       Object.values(blogs.reduce(groupByAuthorReduce, {}))
         .reduce(mostBlogsAuthorReduce, {})
+}
+
+const mostLikes = (blogs) => {
+  const groupByAuthorReduce = (authorsObject, blogItem) => {
+    if (authorsObject[blogItem.author]) {
+      authorsObject[blogItem.author].likes += blogItem.likes
+    } else {
+      authorsObject[blogItem.author] = {}
+      authorsObject[blogItem.author].author = blogItem.author
+      authorsObject[blogItem.author].likes = blogItem.likes
+    }
+    return authorsObject
+  }
+
+  const mostLikesAuthorReduce = (authObj, item) => {
+    if (Object.keys(authObj).length === 0 || item.likes > authObj.likes) {
+      authObj.author = item.author
+      authObj.likes = item.likes
+    }
+    return authObj
+  }
+
+  return blogs.length === 0 ?
+    {} :
+    blogs.length === 1 ? 
+      {
+        author: blogs[0].author,
+        likes: blogs[0].likes
+      } :
+      Object.values(blogs.reduce(groupByAuthorReduce, {}))
+        .reduce(mostLikesAuthorReduce, {})
 }
 
 module.exports = {
   dummy, 
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes
 }
