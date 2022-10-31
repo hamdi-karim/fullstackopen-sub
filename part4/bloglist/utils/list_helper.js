@@ -3,12 +3,21 @@ const dummy = (blogs) => {
 }
 
 const totalLikes = (blogs) => {
+  if (blogs.length === 0) {
+    return 0
+  }
+
   const reducer = (sum, item) => sum + item.likes
 
   return blogs.reduce(reducer, 0)
 }
 
 const favoriteBlog = (blogs) => {
+
+  if (blogs.length === 0) {
+    return {}
+  }
+
   const maxReduce = (maxObject, item) => 
     maxObject.likes > item.likes ? 
       maxObject : 
@@ -18,12 +27,22 @@ const favoriteBlog = (blogs) => {
           likes: item.likes
         } 
 
-  return blogs.length === 0 ?
-    {} :
-    blogs.reduce(maxReduce, {likes: 0}) 
+  return blogs.reduce(maxReduce, {likes: 0}) 
 }
 
 const mostBlogs = (blogs) => {
+
+  if (blogs.length === 0) {
+    return {}
+  }
+
+  if (blogs.length === 1) {
+    return {
+      author: blogs[0].author,
+      blogs: 1
+    }
+  }
+
   const groupByAuthorReduce = (authorsObject, blogItem) => {
     if (authorsObject[blogItem.author]) {
         authorsObject[blogItem.author].blogs ++
@@ -43,18 +62,25 @@ const mostBlogs = (blogs) => {
     return authObj
   }
 
-  return blogs.length === 0 ?
-    {} :
-    blogs.length === 1 ? 
-      {
-        author: blogs[0].author,
-        blogs: 1
-      } :
-      Object.values(blogs.reduce(groupByAuthorReduce, {}))
-        .reduce(mostBlogsAuthorReduce, {})
+  return (
+    Object.values(blogs.reduce(groupByAuthorReduce, {}))
+      .reduce(mostBlogsAuthorReduce, {})
+  )
 }
 
 const mostLikes = (blogs) => {
+
+  if (blogs.length === 0) {
+    return {}
+  }
+
+  if (blogs.length === 1) {
+    return {
+      author: blogs[0].author,
+      likes: blogs[0].likes
+    }
+  }
+
   const groupByAuthorReduce = (authorsObject, blogItem) => {
     if (authorsObject[blogItem.author]) {
       authorsObject[blogItem.author].likes += blogItem.likes
@@ -74,15 +100,10 @@ const mostLikes = (blogs) => {
     return authObj
   }
 
-  return blogs.length === 0 ?
-    {} :
-    blogs.length === 1 ? 
-      {
-        author: blogs[0].author,
-        likes: blogs[0].likes
-      } :
-      Object.values(blogs.reduce(groupByAuthorReduce, {}))
-        .reduce(mostLikesAuthorReduce, {})
+  return (
+    Object.values(blogs.reduce(groupByAuthorReduce, {}))
+      .reduce(mostLikesAuthorReduce, {})
+  )
 }
 
 module.exports = {
