@@ -26,6 +26,16 @@ test('all blogs are returned', async () => {
   expect(blogsResult.body).toHaveLength(helper.initialBlogs.length)
 })
 
+test('unique blogs identifiers are called id instead of _id', async () => {
+  const blogsResult = await api.get('/api/blogs')
+
+  const ids = blogsResult.body.map(blog => blog.id)
+
+  for (const id of ids) {
+    expect(id).toBeDefined()
+  }
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
