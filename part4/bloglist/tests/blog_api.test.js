@@ -36,6 +36,27 @@ test('unique blogs identifiers are called id instead of _id', async () => {
   }
 })
 
+test('a valid blog can be added', async () => {
+  const newBlog = {
+    "author": "KarimTest2",
+    "title": "repo of codes",
+    "url": "https://github.com/fullstack-hy2020/part3-notes-backend/tree/part4-1",
+    "likes": 27
+  }
+
+  await api 
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const finalBlogsResult = await helper.blogsInDb()
+  expect(finalBlogsResult).toHaveLength(helper.initialBlogs.length + 1)
+
+  const titles = finalBlogsResult.map(blog => blog.title)
+  expect(titles).toContain('repo of codes')
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })

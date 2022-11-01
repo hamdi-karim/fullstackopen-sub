@@ -5,5 +5,5 @@ Content-Type: application/json
   "author": "Karim2",
   "title": "repo of codes",
   "url": "https://github.com/fullstack-hy2020/part3-notes-backend/tree/part4-1",
-  "upvotes": 27
+  "likes": 27
 }
