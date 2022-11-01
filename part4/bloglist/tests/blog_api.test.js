@@ -117,7 +117,24 @@ describe('deleting a blog', () => {
 })
 
 
+describe('updating a blog', () => {
+  test('succeeds with a 200 status if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
 
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send({ likes: 36 })
+      .expect(200)
+    
+    const blogsAtEnd = await helper.blogsInDb()
+    const updatedBlog = blogsAtEnd[0]
+    expect(blogsAtEnd).toHaveLength(
+      helper.initialBlogs.length
+    )
+    expect(updatedBlog.likes).toBe(36)
+  })
+})
 
 
 
