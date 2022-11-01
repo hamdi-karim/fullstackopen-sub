@@ -8,9 +8,9 @@ const api = supertest(app)
 
 
 beforeEach(async () => {
-  await Blog.deleteMany({});
+  await Blog.deleteMany({})
   await Blog.insertMany(helper.initialBlogs)
-});
+})
 
 
 test('blogs are returned as json', async () => {
@@ -75,6 +75,21 @@ test('when likes is missing from the request it defaults to 0', async () => {
 
   const addedBlogLikes = finalBlogsResult[finalBlogsResult.length - 1].likes
   expect(addedBlogLikes).toBe(0)
+})
+
+test("when url/title is missing server returns bad request", async () => {
+  const newBlog = {
+    "author": "KarimTest4.12",
+    "url": "https://github.com/fullstack-hy2020/part3-notes-backend/tree/part4-10"
+  }
+
+  await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(400)
+
+  const finalBlogsResult = await helper.blogsInDb()
+  expect(finalBlogsResult).toHaveLength(helper.initialBlogs.length)
 })
 
 afterAll(() => {

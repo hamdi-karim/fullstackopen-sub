@@ -1,6 +1,8 @@
 // Module defines Establishing connection to the database
 const { MONGODB_URI } = require('./utils/config')
 const express = require('express')
+require("express-async-errors");
+
 const cors = require('cors')
 const blogsRouter = require('./controllers/blogs')
 const middleware = require('./utils/middleware')
