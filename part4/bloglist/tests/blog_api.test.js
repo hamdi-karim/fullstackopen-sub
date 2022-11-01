@@ -57,6 +57,26 @@ test('a valid blog can be added', async () => {
   expect(titles).toContain('repo of codes')
 })
 
+test('when likes is missing from the request it defaults to 0', async () => {
+  const newBlog = {
+    "author": "KarimTest4.11",
+    "title": "space power",
+    "url": "https://github.com/fullstack-hy2020/part3-notes-backend/tree/part4-10"
+  }
+
+  await api
+    .post("/api/blogs")
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+  
+  const finalBlogsResult = await helper.blogsInDb()
+  expect(finalBlogsResult).toHaveLength(helper.initialBlogs.length + 1)
+
+  const addedBlogLikes = finalBlogsResult[finalBlogsResult.length - 1].likes
+  expect(addedBlogLikes).toBe(0)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
