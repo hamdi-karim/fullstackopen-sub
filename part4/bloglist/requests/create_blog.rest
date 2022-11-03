@@ -2,8 +2,9 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "author": "Karim2",
-  "title": "Jasmine",
+  "author": "Karim2xs",
+  "title": "Jasmines",
   "url": "https://github.com/fullstack-hy2020/part3-notes-backend/tree/part4-1",
-  "likes": 27
+  "likes": 27,
+  "userId": "6362a3a4969cb35018e06739"
 }
