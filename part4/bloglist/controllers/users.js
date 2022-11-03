@@ -17,9 +17,21 @@ usersRouter.post('/', async (request, response) => {
     })
   }
 
+  if (!username) {
+    return response.status(400).json({
+      error: 'username is required'
+    })
+  }
+
   if (!password) {
     return response.status(400).json({
-      error: 'User validation failed: password: Path `password` is required'
+      error: 'password is required'
+    })
+  }
+
+  if (username.length < 3) {
+    return response.status(400).json({
+      error: 'username must contain a minimum of 3 charchters'
     })
   }
 
