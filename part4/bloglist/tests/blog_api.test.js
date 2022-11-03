@@ -116,22 +116,68 @@ describe('addition of new blogs', () => {
 })
 
 describe('deleting a blog', () => {
+  let token = null
+
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash("kh50027881", 10)
+    const user = await new User({ username: "testRoot", passwordHash }).save()
+
+    const userForToken = { username: "testRoot", id: user.id }
+    token = jwt.sign(userForToken, config.SECRET)
+
+    const newBlog = {
+      title: "test delete blog",
+      author: "karim",
+      url: "https://www.thekarimhamdi.com",
+    }
+
+    await api
+      .post("/api/blogs")
+      .set("Authorization", `Bearer ${token}`)
+      .send(newBlog)
+      .expect(201)
+      .expect("Content-Type", /application\/json/)
+
+    return token
+  })
+
   test('succeeds with 204 if id is valid', async () => {
-    const blogsAtStart = await helper.blogsInDb()
+    const blogsAtStart =  await Blog.find({}).populate("user")
     const blogToDelete = blogsAtStart[0]
 
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set("Authorization", `Bearer ${token}`)
       .expect(204)
     
-    const blogsAtEnd = await helper.blogsInDb()
+    const blogsAtEnd = await Blog.find({}).populate("user")
 
     expect(blogsAtEnd).toHaveLength(
-      helper.initialBlogs.length - 1
+      blogsAtStart.length - 1
     )
 
     const titles = blogsAtEnd.map(res => res.title)
     expect(titles).not.toContain(blogToDelete.title)
+  })
+
+  test("returns 401 if it is a bad request", async () => {
+    const blogsAtStart = await Blog.find({}).populate("user")
+    const blogToDelete = blogsAtStart[0]
+
+    token = "vdvddvxwxwxwcxwcxwcx"
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set("Authorization", `Bearer ${token}`)
+      .expect(401)
+
+    const blogsAtEnd = await Blog.find({}).populate("user")
+
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
+    expect(blogsAtStart).toEqual(blogsAtEnd)
   })
 })
 

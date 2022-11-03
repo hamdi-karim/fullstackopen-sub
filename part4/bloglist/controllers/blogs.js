@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 const config = require('../utils/config')
 const Blog = require('../models/blog')
 const User = require('../models/user')
+
 blogsRouter.get('/', async (request, response) => {
   const result = await Blog
     .find({})
@@ -27,8 +28,8 @@ blogsRouter.get("/:id", async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
-  const user = request.user
   const token = request.token
+  const user = request.user
   
   const decodedToken = jwt.verify(token, config.SECRET)
   if (!decodedToken.id) {
@@ -51,9 +52,23 @@ blogsRouter.post('/', async (request, response) => {
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndRemove(request.params.id)
+  const token = request.token
+  const user = request.user
+  const decodedToken = jwt.verify(token, config.SECRET)
+  const id = request.params.id
 
-  response.status(204).end()
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  const blog = await Blog.findById(id)
+
+  if (blog.user.toString() === user.id.toString()) {
+    await Blog.deleteOne({ _id: id });
+    response.sendStatus(204).end();
+  } else {
+    response.status(401).json({ error: "unauthorized operation" });
+  }
 })
 
 blogsRouter.put('/:id', async (request, response) => {
