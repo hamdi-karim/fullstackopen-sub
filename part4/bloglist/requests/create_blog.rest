@@ -1,11 +1,7 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRoZWthcmltaGFtZGkiLCJpZCI6IjYzNjJhM2I4OTY5Y2IzNTAxOGUwNjczYiIsImlhdCI6MTY2NzQ3MjUxM30.vQmy8rQOr8sl1FJ-m07bR-Hb4F9kq0uOFyuiVoPx_-w
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRoZWthcmltaGFtZGkiLCJpZCI6IjYzNjJhM2I4OTY5Y2IzNTAxOGUwNjczYiIsImlhdCI6MTY2NzQ5NTM5M30.M9tKnYd9rNjxMgNViP_b8H2xQEnIe2gDv4Rg2gthe-g
 
 {
-  "author": "Karim2xs",
-  "title": "Jasmines",
-  "url": "https://github.com/fullstack-hy2020/part3-notes-backend/tree/part4-1",
-  "likes": 27,
-  "userId": "6362a3a4969cb35018e06739"
+      "author": "KarimDev4.20"
 }

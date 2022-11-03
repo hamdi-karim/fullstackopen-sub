@@ -1,8 +1,14 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
-const app = require('../app')
-const Blog = require('../models/blog')
+const bcrypt = require('bcrypt')
+const jwt = require("jsonwebtoken")
+
 const helper = require('./test_helper')
+const app = require('../app')
+const config = require("../utils/config")
+
+const Blog = require('../models/blog')
+const User = require('../models/user')
 
 const api = supertest(app)
 
@@ -39,6 +45,17 @@ describe('when there is intially some blogs saved', () => {
 
 
 describe('addition of new blogs', () => {
+  let token = null
+  beforeAll(async () => {
+    await User.deleteMany({})
+
+    const passwordHash = await bcrypt.hash("khgdwb95", 10)
+    const user = await new User({ username: "root", passwordHash }).save()
+
+    const userForToken = { username: "root", id: user.id }
+    return (token = jwt.sign(userForToken, config.SECRET))
+  })
+
   test('a valid blog can be added', async () => {
     const newBlog = {
       "author": "KarimTest2",
@@ -49,6 +66,7 @@ describe('addition of new blogs', () => {
   
     await api 
       .post('/api/blogs')
+      .set("Authorization", `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -69,6 +87,7 @@ describe('addition of new blogs', () => {
   
     await api
       .post("/api/blogs")
+      .set("Authorization", `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -82,15 +101,15 @@ describe('addition of new blogs', () => {
 
   test("when url/title is missing server returns bad request", async () => {
     const newBlog = {
-      "author": "KarimTest4.12",
-      "url": "https://github.com/fullstack-hy2020/part3-notes-backend/tree/part4-10"
+      "author": "KarimTest4.12"
     }
-  
+
     await api
-      .post("/api/blogs")
-      .send(newBlog)
-      .expect(400)
-  
+    .post("/api/blogs")
+    .set("Authorization", `Bearer ${token}`)
+    .send(newBlog)
+    .expect(400)
+    
     const finalBlogsResult = await helper.blogsInDb()
     expect(finalBlogsResult).toHaveLength(helper.initialBlogs.length)
   })
