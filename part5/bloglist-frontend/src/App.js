@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
 import Blog from './components/Blog'
+import CreateForm from './components/CreateForm'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -22,6 +23,7 @@ const App = () => {
     if (loggedInUserJSON) {
       const user = JSON.parse(loggedInUserJSON)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
   
@@ -37,6 +39,7 @@ const App = () => {
         'loggedInUser', JSON.stringify(user)
       )
       setUser(user)
+      blogService.setToken(user.token)
       setUsername('')
       setPassword('')
     } catch (error) {
@@ -48,7 +51,10 @@ const App = () => {
   const handleUserLogout = () => {
     window.localStorage.removeItem('loggedInUser')
     setUser(null)
-    setBlogs([])
+  }
+
+  const updateBlogsAfterCreation = (newBlog) => {
+    setBlogs(blogs.concat(newBlog))
   }
 
   if (user === null) {
@@ -84,6 +90,9 @@ const App = () => {
     <div>
       <h2>blogs</h2>
       <p> <i>{ user.name }</i> logged in <button onClick={handleUserLogout}>Logout</button></p>
+
+      <CreateForm updateBlogsAfterCreation={ updateBlogsAfterCreation } />
+      <br />
       
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
