@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import Blog from './components/Blog'
 import CreateForm from './components/CreateForm'
@@ -15,6 +15,8 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [successfulNotifMessage, setSuccessfulNotifMessage] = useState("")
   const [failedlNotifMessage, setFailedNotifMessage] = useState("")
+
+  const blogFormRef = useRef()
   
 
   useEffect(() => {
@@ -62,6 +64,7 @@ const App = () => {
   }
 
   const updateBlogsAfterCreation = (newBlog) => {
+    blogFormRef.current.toggleVisibility()
     setBlogs(blogs.concat(newBlog))
   }
 
@@ -116,7 +119,7 @@ const App = () => {
       {failedlNotifMessage && <Notification message={failedlNotifMessage} type="error" />}
       <p> <i>{ user.name }</i> logged in <button onClick={handleUserLogout}>Logout</button></p>
 
-      <Togglable buttonLabel="Create new blog">
+      <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
         <CreateForm 
           updateBlogsAfterCreation={updateBlogsAfterCreation} 
           handleCreateBlogSuccessfulOperation={handleCreateBlogSuccessfulOperation}
