@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import CreateForm from './components/CreateForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -115,11 +116,13 @@ const App = () => {
       {failedlNotifMessage && <Notification message={failedlNotifMessage} type="error" />}
       <p> <i>{ user.name }</i> logged in <button onClick={handleUserLogout}>Logout</button></p>
 
-      <CreateForm 
-        updateBlogsAfterCreation={updateBlogsAfterCreation} 
-        handleCreateBlogSuccessfulOperation={handleCreateBlogSuccessfulOperation}
-        handleCreateBlogFailureOperation={handleCreateBlogFailureOperation}
-      />
+      <Togglable buttonLabel="Create new blog">
+        <CreateForm 
+          updateBlogsAfterCreation={updateBlogsAfterCreation} 
+          handleCreateBlogSuccessfulOperation={handleCreateBlogSuccessfulOperation}
+          handleCreateBlogFailureOperation={handleCreateBlogFailureOperation}
+        />
+      </Togglable>
       <br />
       
       {blogs.map(blog =>
