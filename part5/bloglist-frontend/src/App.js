@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 
 import Blog from './components/Blog'
-import CreateForm from './components/CreateForm'
 import Notification from './components/Notification'
+import CreateForm from './components/CreateForm'
 import Togglable from './components/Togglable'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
+import LoginForm from './components/LoginForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -82,55 +83,54 @@ const App = () => {
     }, 5000)
   }
 
-  if (user === null) {
-    return (
-      <div>
-        <h2>Log in to application</h2>
-        {failedlNotifMessage && <Notification message={failedlNotifMessage} type="error" />}
-        <form onSubmit={handleLogin}>
-          <div>
-            username
-            <input 
-              type="text" 
-              name="Username" 
-              value={username} 
-              onChange={({ target }) => setUsername(target.value)} 
-            />
-          </div>
-          <div>
-            password
-            <input 
-              type="password" 
-              name="Password" 
-              value={password} 
-              onChange={({ target }) => setPassword(target.value)} 
-            />
-          </div>
-          <button type="submit">Login</button>
-        </form>
-      </div>
-    )
-  }
+  // if (user === null) {
+  //   return (
+  //     <div>
+  //       <Togglable buttonLabel='Login'>
+  //           <LoginForm
+  //             username={username}
+  //             password={password}
+  //             handleUsernameChange={({ target }) => setUsername(target.value)}
+  //             handlePasswordChange={({ target }) => setPassword(target.value)}
+  //             handleSubmit={handleLogin}
+  //           />
+  //       </Togglable> 
+  //     </div>
+  //   )
+  // }
 
   return (
     <div>
-      <h2>blogs</h2>
+      <h2>Blogs</h2>
       {successfulNotifMessage && <Notification message={successfulNotifMessage} type="success" />}
       {failedlNotifMessage && <Notification message={failedlNotifMessage} type="error" />}
-      <p> <i>{ user.name }</i> logged in <button onClick={handleUserLogout}>Logout</button></p>
 
-      <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
-        <CreateForm 
-          updateBlogsAfterCreation={updateBlogsAfterCreation} 
-          handleCreateBlogSuccessfulOperation={handleCreateBlogSuccessfulOperation}
-          handleCreateBlogFailureOperation={handleCreateBlogFailureOperation}
-        />
-      </Togglable>
-      <br />
-      
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+      {user === null ? 
+        <Togglable buttonLabel='Login'>
+          <LoginForm
+            username={username}
+            password={password}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
+            handleSubmit={handleLogin}
+          />
+        </Togglable> : 
+        <>
+          <p> <i>{ user.name }</i> logged in <button onClick={handleUserLogout}>Logout</button></p>
+          <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
+            <CreateForm 
+              updateBlogsAfterCreation={updateBlogsAfterCreation} 
+              handleCreateBlogSuccessfulOperation={handleCreateBlogSuccessfulOperation}
+              handleCreateBlogFailureOperation={handleCreateBlogFailureOperation}
+            />
+          </Togglable>
+          <br />
+          
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+          )}
+        </>
+      }
     </div>
   )
 }
