@@ -106,15 +106,13 @@ const App = () => {
       {failedlNotifMessage && <Notification message={failedlNotifMessage} type="error" />}
 
       {user === null ? 
-        <Togglable buttonLabel='Login'>
           <LoginForm
             username={username}
             password={password}
             handleUsernameChange={({ target }) => setUsername(target.value)}
             handlePasswordChange={({ target }) => setPassword(target.value)}
             handleSubmit={handleLogin}
-          />
-        </Togglable> : 
+          /> : 
         <>
           <p> <i>{ user.name }</i> logged in <button onClick={handleUserLogout}>Logout</button></p>
           <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
