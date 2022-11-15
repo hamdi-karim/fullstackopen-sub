@@ -14,15 +14,15 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [successfulNotifMessage, setSuccessfulNotifMessage] = useState("")
-  const [failedlNotifMessage, setFailedNotifMessage] = useState("")
+  const [successfulNotifMessage, setSuccessfulNotifMessage] = useState('')
+  const [failedlNotifMessage, setFailedNotifMessage] = useState('')
 
   const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -33,11 +33,11 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
-  
-  
+
+
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password
@@ -50,12 +50,12 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (error) {
-      setFailedNotifMessage("Wrong username or password")
+      setFailedNotifMessage('Wrong username or password')
       setTimeout(() => {
-        setFailedNotifMessage("")
+        setFailedNotifMessage('')
       }, 4000)
     }
-  } 
+  }
 
   const handleUserLogout = () => {
     window.localStorage.removeItem('loggedInUser')
@@ -74,8 +74,8 @@ const App = () => {
       )
       const newBlogs = blogs.map((blog) =>
         blog.id === blogId ? res : blog
-      );
-      setBlogs(newBlogs);
+      )
+      setBlogs(newBlogs)
     } catch (error) {
       setFailedNotifMessage(error.response.data.error)
       setTimeout(() => {
@@ -118,36 +118,36 @@ const App = () => {
       {successfulNotifMessage && <Notification message={successfulNotifMessage} type="success" />}
       {failedlNotifMessage && <Notification message={failedlNotifMessage} type="error" />}
 
-      {user === null ? 
-          <LoginForm
-            username={username}
-            password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
-          /> : 
+      {user === null ?
+        <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+        /> :
         <>
           <p> <i>{ user.name }</i> logged in <button onClick={handleUserLogout}>Logout</button></p>
           <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
-            <CreateForm 
-              updateBlogsAfterCreation={updateBlogsAfterCreation} 
+            <CreateForm
+              updateBlogsAfterCreation={updateBlogsAfterCreation}
               handleCreateBlogSuccessfulOperation={handleCreateBlogSuccessfulOperation}
               handleCreateBlogFailureOperation={handleCreateBlogFailureOperation}
             />
           </Togglable>
           <br />
-          
+
           {blogs
             .sort((a,b) => b.likes - a.likes)
             .map(blog =>
-            <Blog 
-              key={blog.id} 
-              blog={blog} 
-              handleUpdateLikes={handleUpdateLikes}
-              handleDeleteBlog={handleDeleteBlog}
-              userId={user.id}
-            />
-          )}
+              <Blog
+                key={blog.id}
+                blog={blog}
+                handleUpdateLikes={handleUpdateLikes}
+                handleDeleteBlog={handleDeleteBlog}
+                userId={user.id}
+              />
+            )}
         </>
       }
     </div>
