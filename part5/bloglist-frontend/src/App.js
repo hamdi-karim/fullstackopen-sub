@@ -50,7 +50,6 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (error) {
-      console.error(error)
       setFailedNotifMessage("Wrong username or password")
       setTimeout(() => {
         setFailedNotifMessage("")
@@ -85,6 +84,19 @@ const App = () => {
     }
   }
 
+  const handleDeleteBlog = async (blogId) => {
+
+    try {
+      await blogService.deleteBlog(blogId)
+      setBlogs(blogs.filter(blog => blog.id !== blogId))
+    } catch (error) {
+      setFailedNotifMessage(error.response.data.error)
+      setTimeout(() => {
+        setFailedNotifMessage('')
+      }, 3000)
+    }
+  }
+
   const handleCreateBlogSuccessfulOperation = (blogTitle, blogAuthor) => {
     setSuccessfulNotifMessage(`A new Blog : ${blogTitle} has been added by ${blogAuthor}`)
     setTimeout(() => {
@@ -98,6 +110,7 @@ const App = () => {
       setFailedNotifMessage('')
     }, 5000)
   }
+
 
   return (
     <div>
@@ -131,6 +144,8 @@ const App = () => {
               key={blog.id} 
               blog={blog} 
               handleUpdateLikes={handleUpdateLikes}
+              handleDeleteBlog={handleDeleteBlog}
+              userId={user.id}
             />
           )}
         </>
