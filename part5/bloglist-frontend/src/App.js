@@ -18,7 +18,6 @@ const App = () => {
   const [failedlNotifMessage, setFailedNotifMessage] = useState("")
 
   const blogFormRef = useRef()
-  
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -69,6 +68,23 @@ const App = () => {
     setBlogs(blogs.concat(newBlog))
   }
 
+  const handleUpdateLikes = async(blogId, updateBlog) => {
+    try {
+      const res = await blogService.updateBlog(
+        blogId, updateBlog
+      )
+      const newBlogs = blogs.map((blog) =>
+        blog.id === blogId ? res : blog
+      );
+      setBlogs(newBlogs);
+    } catch (error) {
+      setFailedNotifMessage(error.response.data.error)
+      setTimeout(() => {
+        setFailedNotifMessage('')
+      }, 3000)
+    }
+  }
+
   const handleCreateBlogSuccessfulOperation = (blogTitle, blogAuthor) => {
     setSuccessfulNotifMessage(`A new Blog : ${blogTitle} has been added by ${blogAuthor}`)
     setTimeout(() => {
@@ -82,22 +98,6 @@ const App = () => {
       setFailedNotifMessage('')
     }, 5000)
   }
-
-  // if (user === null) {
-  //   return (
-  //     <div>
-  //       <Togglable buttonLabel='Login'>
-  //           <LoginForm
-  //             username={username}
-  //             password={password}
-  //             handleUsernameChange={({ target }) => setUsername(target.value)}
-  //             handlePasswordChange={({ target }) => setPassword(target.value)}
-  //             handleSubmit={handleLogin}
-  //           />
-  //       </Togglable> 
-  //     </div>
-  //   )
-  // }
 
   return (
     <div>
@@ -125,7 +125,11 @@ const App = () => {
           <br />
           
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog 
+              key={blog.id} 
+              blog={blog} 
+              handleUpdateLikes={handleUpdateLikes}
+            />
           )}
         </>
       }
