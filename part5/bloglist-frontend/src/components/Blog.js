@@ -35,13 +35,16 @@ const Blog = ({
   }
 
   return (
-    <div style={blogStyle}>
-      <div>{blog.title} <button onClick={() => setShowDetails(!showDetails)}>{ showDetails ? 'hide' : 'view' }</button></div>
+    <div style={blogStyle} className='blog'>
+      <div>
+        <span>{blog.title}</span>
+        <span>{blog.author}</span>{' '}
+        <button onClick={() => setShowDetails(!showDetails)}>{ showDetails ? 'hide' : 'view' }</button>
+      </div>
       { showDetails && (
         <>
           <div>{ blog.url }</div>
           <div>{ blog.likes } <button onClick={handleAddLike}>like</button></div>
-          <div>{ blog.author }</div>
           {(blog.user ? userId === blog.user.id : userId === blog.user) && <button onClick={deleteBlog}>remove</button>}
         </>
       ) }
