@@ -62,11 +62,6 @@ const App = () => {
     setUser(null)
   }
 
-  const updateBlogsAfterCreation = (newBlog) => {
-    blogFormRef.current.toggleVisibility()
-    setBlogs(blogs.concat(newBlog))
-  }
-
   const handleUpdateLikes = async(blogId, updateBlog) => {
     try {
       const res = await blogService.updateBlog(
@@ -94,6 +89,21 @@ const App = () => {
       setTimeout(() => {
         setFailedNotifMessage('')
       }, 3000)
+    }
+  }
+
+  const createBlog = async (title, author, url) => {
+    try {
+      blogFormRef.current.toggleVisibility()
+      const blog = await blogService.createBlog({
+        title,
+        author,
+        url,
+      })
+      setBlogs(blogs.concat(blog))
+      handleCreateBlogSuccessfulOperation(title, author)
+    } catch (exception) {
+      handleCreateBlogFailureOperation(' Exception ' + exception.response.data.error)
     }
   }
 
@@ -130,9 +140,7 @@ const App = () => {
           <p> <i>{ user.name }</i> logged in <button onClick={handleUserLogout}>Logout</button></p>
           <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
             <CreateForm
-              updateBlogsAfterCreation={updateBlogsAfterCreation}
-              handleCreateBlogSuccessfulOperation={handleCreateBlogSuccessfulOperation}
-              handleCreateBlogFailureOperation={handleCreateBlogFailureOperation}
+              createBlog={createBlog}
             />
           </Togglable>
           <br />

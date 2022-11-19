@@ -1,32 +1,20 @@
 import React from 'react'
 import { useState } from 'react'
-import blogService from '../services/blogs'
 
-const CreateForm = ({ updateBlogsAfterCreation, handleCreateBlogSuccessfulOperation, handleCreateBlogFailureOperation }) => {
+const CreateForm = ({ createBlog }) => {
 
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  const handleCreateBlog = async (event) => {
+  const handleCreateBlog = (event) => {
     event.preventDefault()
 
-    try {
-      const result = await blogService.createBlog({
-        title,
-        author,
-        url
-      })
+    createBlog(title, author, url)
 
-      updateBlogsAfterCreation(result)
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      handleCreateBlogSuccessfulOperation(title, author)
-
-    } catch (error) {
-      handleCreateBlogFailureOperation(error.response.data.error)
-    }
+    setTitle('')
+    setAuthor('')
+    setUrl('')
   }
 
   return (
@@ -34,33 +22,36 @@ const CreateForm = ({ updateBlogsAfterCreation, handleCreateBlogSuccessfulOperat
       <h2>Create new Blog</h2>
       <form onSubmit={handleCreateBlog}>
         <div>
-                Title
+          Title
           <input
-            type="text"
-            name="Title"
+            type='text'
+            name='Title'
+            placeholder='blog title (required)'
             value={ title }
             onChange={({ target }) =>  setTitle(target.value)}
           />
         </div>
         <div>
-                Author
+          Author
           <input
-            type="text"
-            name="Author"
+            type='text'
+            name='Author'
+            placeholder='blog author (required)'
             value={ author }
             onChange={({ target }) =>  setAuthor(target.value)}
           />
         </div>
         <div>
-                Url
+          Url
           <input
-            type="text"
-            name="Url"
+            type='text'
+            name='Url'
+            placeholder='blog url (required)'
             value={ url }
             onChange={({ target }) =>  setUrl(target.value)}
           />
         </div>
-        <button type="submit">Create</button>
+        <button type='submit'>Create</button>
       </form>
     </div>
   )
