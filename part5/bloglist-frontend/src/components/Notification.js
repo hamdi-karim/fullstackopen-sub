@@ -21,7 +21,10 @@ const Notification = ({ message, type }) => {
   }
 
   return (
-    <p style={type === 'success' ? successStyles : failureStyles}>
+    <p
+      className='notif'
+      style={type === 'success' ? successStyles : failureStyles}
+    >
       { message }
     </p>
   )
