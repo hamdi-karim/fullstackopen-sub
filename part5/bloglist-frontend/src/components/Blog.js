@@ -37,7 +37,7 @@ const Blog = ({
   return (
     <div style={blogStyle} className='blog'>
       <div>
-        <span>{blog.title}</span>
+        <span>{blog.title}</span>{' '}
         <span>{blog.author}</span>{' '}
         <button onClick={() => setShowDetails(!showDetails)}>{ showDetails ? 'hide' : 'view' }</button>
       </div>
