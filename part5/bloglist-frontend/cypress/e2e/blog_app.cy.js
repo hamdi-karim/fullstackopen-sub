@@ -25,7 +25,7 @@ describe('Blog app', function() {
       })
   
       it('fails with wrong credentials', function() {
--        cy.get('#username').type('testkhgdwb')
+-       cy.get('#username').type('testkhgdwb')
         cy.get('#password').type('wrongwhy?')
         cy.get('#login-button').click()
 
@@ -60,7 +60,6 @@ describe('Blog app', function() {
           cy.createBlog({ title: 'third blog', author: 'Karim3', url: 'www.thirdblog.io'  })
         })
 
-
         it('A user can like a blog', function() {
           cy.contains('view').click()
           cy.contains('Likes:').contains('0')
@@ -68,8 +67,15 @@ describe('Blog app', function() {
           cy.contains('like').click()
           cy.contains('Likes:').contains('1')
         })
+
+        it('A user owner of the blog can delete it', function() {          
+          cy.contains('second blog').parent().find('button').click()
+          cy.contains('remove').click()
+
+          cy.get('html').should('not.contain', 'second blog')
+        })
+
       })
 
     })
-
   })
