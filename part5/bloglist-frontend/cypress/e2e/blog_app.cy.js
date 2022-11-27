@@ -75,6 +75,19 @@ describe('Blog app', function() {
           cy.get('html').should('not.contain', 'second blog')
         })
 
+        it('Blogs are ordered by Number if Likes (ASC)', function() {
+          cy.contains('second blog').parent().find('button').click()
+          cy.contains('like').click().wait(250).click().wait(250).click().wait(250)
+          cy.contains('second blog').parent().find('button').click()
+
+          cy.contains('third blog').parent().find('button').click()
+          cy.contains('like').click().wait(250).click().wait(250)
+          cy.contains('second blog').parent().find('button').click()
+
+          cy.get(".blog").eq(0).should("contain", "second blog");
+          cy.get(".blog").eq(1).should("contain", "third blog");
+          cy.get(".blog").eq(2).should("contain", "first blog");
+        })
       })
 
     })
