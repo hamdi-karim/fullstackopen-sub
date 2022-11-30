@@ -1,7 +1,6 @@
 const bmiCalculator = (height: number, weight: number): string => {
     const heightInMeters: number = height / 100;
     const bmi = weight / (heightInMeters * heightInMeters);
-    console.log(bmi)
     if (bmi >= 18.5 && bmi <= 24.9) {
         return 'Normal (healthy weight)';
     } else if (bmi < 18.5) {
