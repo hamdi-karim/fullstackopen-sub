@@ -1,5 +1,34 @@
 type Rating = 1 | 2 | 3;
 
+interface ExerciseArguments {
+    target: number;
+    exerciseHours: Array<number>;
+}
+
+const parseExerciseArguments = (args: Array<string>): ExerciseArguments => {
+    if (args.length < 4) throw new Error("Not enough arguments");
+  
+    const exerciseValues = args.slice(2);
+  
+    const notValid = exerciseValues.some((arg) => isNaN(Number(arg)));
+  
+    const validArgs = exerciseValues.map((arg) =>
+      !isNaN(Number(arg)) ? Number(arg) : null
+    );
+  
+    const target = validArgs.shift();
+  
+    const exerciseHours = validArgs;
+  
+    if (!notValid) {
+      return {
+        exerciseHours,
+        target,
+      };
+    } else {
+      throw new Error("Provided values were not numbers!");
+    }
+  };
 interface Result { 
     periodLength: number,
     trainingDays: number,
@@ -10,7 +39,7 @@ interface Result {
     average: number
 }
 
-const calculateExercises = (dailyExercices: Array<number>, targetHours: number) => {
+const calculateExercises = (dailyExercices: Array<number>, targetHours: number): Result => {
     let sumTrainingHours: number = 0;
 
     let result: Result = {
@@ -41,13 +70,14 @@ const calculateExercises = (dailyExercices: Array<number>, targetHours: number) 
         result.ratingDescription = 'Good Work. Stay consistent!';
     } else {
         result.rating = 3;
-        result.ratingDescription = 'Congratulatins, target reached!';
+        result.ratingDescription = 'Congratulatins 🎉 Target reached!';
     }
     return result;
 }
 
 try {
-    console.log(calculateExercises([3, 0, 2, 1.5, 0, 3, 1], 2));
+    const { exerciseHours, target } = parseExerciseArguments(process.argv);
+    console.log(calculateExercises(exerciseHours, target));
   } catch (error: unknown) {
     let errorMessage = 'Something went wrong.'
     if (error instanceof Error) {
