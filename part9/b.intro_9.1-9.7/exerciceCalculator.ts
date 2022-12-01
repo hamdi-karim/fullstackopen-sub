@@ -2,10 +2,10 @@ type Rating = 1 | 2 | 3;
 
 interface ExerciseArguments {
     target: number;
-    exerciseHours: Array<number>;
+    exerciseHours: number[];
 }
 
-const parseExerciseArguments = (args: Array<string>): ExerciseArguments => {
+const parseExerciseArguments = (args: string[]): ExerciseArguments => {
     if (args.length < 4) throw new Error("Not enough arguments");
   
     const exerciseValues = args.slice(2);
@@ -45,11 +45,11 @@ const calculateExercises = (dailyExercices: Array<number>, targetHours: number):
     let result: Result = {
         periodLength: dailyExercices.length,
         trainingDays: 0,
-        success: null, 
-        rating: null,
-        ratingDescription: null,
+        success: false, 
+        rating: 1,
+        ratingDescription: '',
         target: targetHours,
-        average: null 
+        average: 0 
     };
 
     for (let index: number = 0; index < result.periodLength; index++) {
