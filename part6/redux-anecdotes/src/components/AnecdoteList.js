@@ -4,9 +4,12 @@ import { setNotification, reset } from '../reducers/notificationReducer'
 import Notification from './Notification';
 
 const AnecdoteList = () => {
-    const anecdotes = useSelector(state => state.anecdotes)
+    const filterText = useSelector(state => state.filter)
     const notificationMessage = useSelector(state => state.notification)
-
+    const anecdotes = useSelector(state => state.anecdotes.filter(
+      anecdote => anecdote.content.toLowerCase().includes(filterText.toLowerCase())
+    ))
+          
     const dispatch = useDispatch()
 
     const sortedAnecdotes = [...anecdotes].sort((a, b) => {
