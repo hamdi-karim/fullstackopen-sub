@@ -10,7 +10,7 @@ const store = configureStore({
       anecdotes: anecdoteReducer,
       filter: filterReducer
     }
-  })
+})
 
 export default store
 
