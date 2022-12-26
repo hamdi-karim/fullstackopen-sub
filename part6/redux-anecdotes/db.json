@@ -49,6 +49,11 @@
       "content": "new bote",
       "votes": 0,
       "id": "xfYLHE3"
+    },
+    {
+      "content": "create with redux thunk",
+      "votes": 0,
+      "id": "ilAbgwj"
     }
   ]
 }
