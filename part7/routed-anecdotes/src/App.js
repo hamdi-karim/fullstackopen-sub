@@ -5,7 +5,8 @@ import {
   Routes, 
   Route, 
   Link,
-  useParams
+  useParams,
+  useNavigate
 } from "react-router-dom"
 
 const Menu = () => {
@@ -66,6 +67,8 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
+  const navigate = useNavigate()
+
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
@@ -79,6 +82,7 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    navigate('/')
   }
 
   return (
@@ -104,6 +108,16 @@ const CreateNew = (props) => {
 
 }
 
+const Notification = ({ notification }) => {
+  const styles = {
+    border: "2px solid red",
+    width: "fit-content"
+  }
+  return (
+    <div style={styles} >A new anecdote "{notification}" created!</div>
+  )
+}
+
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
     {
@@ -127,6 +141,10 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(anecdote.content)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
   }
 
   const anecdoteById = (id) =>
@@ -148,6 +166,7 @@ const App = () => {
       <h1>Software anecdotes</h1>
       <Router>
         <Menu />
+        {notification && <Notification notification={notification} />}
 
         <Routes>
           <Route path="/anecdotes/:id" element={<Anecdote anecdotes={anecdotes} />} />
