@@ -30,7 +30,7 @@ const updateBlog = async (blogId, newObject) => {
   return res.data
 }
 
-const deleteBlog = async(blogId) => {
+const deleteBlog = async (blogId) => {
   const config = {
     headers: { Authorization: token },
   }
