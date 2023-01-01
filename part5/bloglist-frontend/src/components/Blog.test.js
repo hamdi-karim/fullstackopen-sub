@@ -1,16 +1,16 @@
-import React from 'react'
-import '@testing-library/jest-dom/extend-expect'
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import React from "react"
+import "@testing-library/jest-dom/extend-expect"
+import { render, screen } from "@testing-library/react"
+import userEvent from "@testing-library/user-event"
 
-import Blog from './Blog'
+import Blog from "./Blog"
 
-test('Should render blog title & author by default and NOT render url & likes', () => {
+test("Should render blog title & author by default and NOT render url & likes", () => {
   const blog = {
-    title: 'testBlog title',
-    author: 'testBlog author',
+    title: "testBlog title",
+    author: "testBlog author",
     likes: 81,
-    url: 'www.testing.com'
+    url: "www.testing.com",
   }
 
   const container = render(<Blog blog={blog} />)
@@ -25,47 +25,42 @@ test('Should render blog title & author by default and NOT render url & likes', 
   expect(likes).not.toBeInTheDocument()
 })
 
-test('should render url & likes when view button is clicked', async () => {
+test("should render url & likes when view button is clicked", async () => {
   const blog = {
-    title: 'testBlog title',
-    author: 'testBlog author',
+    title: "testBlog title",
+    author: "testBlog author",
     likes: 81,
-    url: 'www.testing.com'
+    url: "www.testing.com",
   }
 
   render(<Blog blog={blog} />)
 
   const user = userEvent.setup()
-  const button = screen.getByText('view')
+  const button = screen.getByText("view")
   await user.click(button)
 
   screen.getByText(blog.url)
   screen.getByText(blog.likes)
 })
 
-test('should call event handler twice when clicking like button twice', async () => {
+test("should call event handler twice when clicking like button twice", async () => {
   const blog = {
-    title: 'testBlog title',
-    author: 'testBlog author',
+    title: "testBlog title",
+    author: "testBlog author",
     likes: 81,
-    url: 'www.testing.com'
+    url: "www.testing.com",
   }
 
   const handleLikesMockHandler = jest.fn()
 
-  render(
-    <Blog
-      blog={blog}
-      handleUpdateLikes={handleLikesMockHandler}
-    />
-  )
+  render(<Blog blog={blog} handleUpdateLikes={handleLikesMockHandler} />)
 
   const user = userEvent.setup()
 
-  const viewButton = screen.getByText('view')
+  const viewButton = screen.getByText("view")
   await user.click(viewButton)
 
-  const likeButton = screen.getByText('like')
+  const likeButton = screen.getByText("like")
   await user.click(likeButton)
   await user.click(likeButton)
 
