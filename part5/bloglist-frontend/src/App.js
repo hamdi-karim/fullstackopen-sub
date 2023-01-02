@@ -1,21 +1,23 @@
 import { useState, useEffect, useRef } from "react"
+import { useDispatch } from "react-redux"
 
 import Blog from "./components/Blog"
 import Notification from "./components/Notification"
 import CreateForm from "./components/CreateForm"
 import Togglable from "./components/Togglable"
+import LoginForm from "./components/LoginForm"
 
 import blogService from "./services/blogs"
 import loginService from "./services/login"
-import LoginForm from "./components/LoginForm"
+import { editNotification, reset } from "./reducers/notificationReducer"
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState(null)
 
+  const dispatch = useDispatch()
   const blogFormRef = useRef()
 
   useEffect(() => {
@@ -89,16 +91,16 @@ const App = () => {
   }
 
   const notify = (message, type = "info") => {
-    setNotification({ message, type })
+    dispatch(editNotification({ message, type }))
     setTimeout(() => {
-      setNotification(null)
+      dispatch(reset(null))
     }, 5000)
   }
 
   return (
     <div>
       <h2>Blogs</h2>
-      <Notification notification={notification} />
+      <Notification />
 
       {user === null ? (
         <LoginForm
