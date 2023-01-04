@@ -10,7 +10,12 @@ import LoginForm from "./components/LoginForm"
 import blogService from "./services/blogs"
 import loginService from "./services/login"
 import { editNotification, reset } from "./reducers/notificationReducer"
-import { initializeBlogs, setBlogs, createBlog } from "./reducers/blogReducer"
+import {
+  initializeBlogs,
+  setBlogs,
+  createBlog,
+  deleteBlog,
+} from "./reducers/blogReducer"
 
 const App = () => {
   const [username, setUsername] = useState("")
@@ -69,12 +74,7 @@ const App = () => {
   }
 
   const handleDeleteBlog = async (blogId) => {
-    try {
-      await blogService.deleteBlog(blogId)
-      dispatch(setBlogs(blogs.filter((blog) => blog.id !== blogId)))
-    } catch (exception) {
-      notify(`Exception "${exception.response.data.error}"`, "alert")
-    }
+    dispatch(deleteBlog(blogId))
   }
 
   const handleCreateBlog = async (title, author, url) => {
