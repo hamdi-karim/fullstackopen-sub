@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { useSelector, useDispatch } from "react-redux"
+import { BrowserRouter as Router, Routes, Route /*,Link*/ } from "react-router-dom"
 
 import Blog from "./components/Blog"
 import Notification from "./components/Notification"
@@ -16,6 +17,10 @@ import {
   createBlog,
   deleteBlog,
 } from "./reducers/blogReducer"
+import { initializeUsers } from "./reducers/usersReducer"
+
+import Users from "./components/Users"
+import User from "./components/User"
 
 const App = () => {
   const [username, setUsername] = useState("")
@@ -36,9 +41,11 @@ const App = () => {
 
   useEffect(() => {
     dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [dispatch])
 
   const blogs = useSelector((state) => state.blogs)
+  const users = useSelector((state) => state.users)
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -81,7 +88,6 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     dispatch(createBlog({ title, author, url }))
     notify(`A new Blog : ${title} has been added by ${author}`)
-    // notify(`Exception "${exception.response.data.error}"`, "alert")
   }
 
   const notify = (message, type = "info") => {
@@ -111,6 +117,14 @@ const App = () => {
             <i>{user.name}</i> logged in{" "}
             <button onClick={handleUserLogout}>Logout</button>
           </p>
+
+          <Router>
+            <Routes>
+              <Route path="/users" element={<Users />} />
+              <Route path="/users/:id" element={<User users={users} />} />
+            </Routes>
+          </Router>
+
           <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
             <CreateForm handleCreateBlog={handleCreateBlog} />
           </Togglable>
