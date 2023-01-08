@@ -1,6 +1,7 @@
 import { useSelector, useDispatch } from "react-redux"
 import { useParams } from "react-router-dom"
-import { likeBlog } from "../reducers/blogReducer"
+import { updateBlog } from "../reducers/blogReducer"
+import Comments from "../components/Comments"
 
 const BlogDetailsPage = () => {
   const dispatch = useDispatch()
@@ -10,7 +11,7 @@ const BlogDetailsPage = () => {
 
   const handleAddLike = () => {
     const blogToUpdate = { ...blog, likes: blog.likes + 1, user: blog.user.id }
-    dispatch(likeBlog(blog.id, blogToUpdate))
+    dispatch(updateBlog(blog.id, blogToUpdate))
   }
 
   if (!blog) {
@@ -29,6 +30,7 @@ const BlogDetailsPage = () => {
         <button onClick={handleAddLike}>like</button>
       </div>
       {blog.user && <div>Added by: {blog.user.name}</div>}
+      <Comments />
     </div>
   )
 }
