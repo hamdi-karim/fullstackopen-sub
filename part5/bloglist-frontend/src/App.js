@@ -1,26 +1,21 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { BrowserRouter as Router, Routes, Route /*,Link*/ } from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
-import Blog from "./components/Blog"
 import Notification from "./components/Notification"
-import CreateForm from "./components/CreateForm"
-import Togglable from "./components/Togglable"
 import LoginForm from "./components/LoginForm"
 
 import blogService from "./services/blogs"
 import loginService from "./services/login"
 import { editNotification, reset } from "./reducers/notificationReducer"
-import {
-  initializeBlogs,
-  setBlogs,
-  createBlog,
-  deleteBlog,
-} from "./reducers/blogReducer"
+import { initializeBlogs /*, setBlogs, deleteBlog*/ } from "./reducers/blogReducer"
 import { initializeUsers } from "./reducers/usersReducer"
 
-import Users from "./components/Users"
-import User from "./components/User"
+import UsersPage from "./pages/UsersPage"
+import UserDetailsPage from "./pages/UserDetailsPage"
+
+import Home from "./pages/HomePage"
+import BlogDetailsPage from "./pages/BlogDetailsPage"
 
 const App = () => {
   const [username, setUsername] = useState("")
@@ -28,7 +23,6 @@ const App = () => {
   const [user, setUser] = useState(null)
 
   const dispatch = useDispatch()
-  const blogFormRef = useRef()
 
   useEffect(() => {
     const loggedInUserJSON = window.localStorage.getItem("loggedInUser")
@@ -44,7 +38,7 @@ const App = () => {
     dispatch(initializeUsers())
   }, [dispatch])
 
-  const blogs = useSelector((state) => state.blogs)
+  // const blogs = useSelector((state) => state.blogs)
   const users = useSelector((state) => state.users)
 
   const handleLogin = async (event) => {
@@ -70,25 +64,20 @@ const App = () => {
     setUser(null)
   }
 
-  const handleUpdateLikes = async (blogId, updateBlog) => {
-    try {
-      const res = await blogService.updateBlog(blogId, updateBlog)
-      const newBlogs = blogs.map((blog) => (blog.id === blogId ? res : blog))
-      dispatch(setBlogs(newBlogs))
-    } catch (exception) {
-      notify(`Exception "${exception.response.data.error}"`, "alert")
-    }
-  }
+  //TODO: move to BlogDetailsPage
+  // const handleUpdateLikes = async (blogId, updateBlog) => {
+  //   try {
+  //     const res = await blogService.updateBlog(blogId, updateBlog)
+  //     const newBlogs = blogs.map((blog) => (blog.id === blogId ? res : blog))
+  //     dispatch(setBlogs(newBlogs))
+  //   } catch (exception) {
+  //     notify(`Exception "${exception.response.data.error}"`, "alert")
+  //   }
+  // }
 
-  const handleDeleteBlog = async (blogId) => {
-    dispatch(deleteBlog(blogId))
-  }
-
-  const handleCreateBlog = async (title, author, url) => {
-    blogFormRef.current.toggleVisibility()
-    dispatch(createBlog({ title, author, url }))
-    notify(`A new Blog : ${title} has been added by ${author}`)
-  }
+  // const handleDeleteBlog = async (blogId) => {
+  //   dispatch(deleteBlog(blogId))
+  // }
 
   const notify = (message, type = "info") => {
     dispatch(editNotification({ message, type }))
@@ -120,28 +109,12 @@ const App = () => {
 
           <Router>
             <Routes>
-              <Route path="/users" element={<Users />} />
-              <Route path="/users/:id" element={<User users={users} />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/users" element={<UsersPage />} />
+              <Route path="/users/:id" element={<UserDetailsPage users={users} />} />
+              <Route path="/blogs/:id" element={<BlogDetailsPage />} />
             </Routes>
           </Router>
-
-          <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
-            <CreateForm handleCreateBlog={handleCreateBlog} />
-          </Togglable>
-          <br />
-
-          {blogs
-            .slice()
-            .sort((a, b) => b.likes - a.likes)
-            .map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                handleUpdateLikes={handleUpdateLikes}
-                handleDeleteBlog={handleDeleteBlog}
-                userId={user.id}
-              />
-            ))}
         </>
       )}
     </div>
